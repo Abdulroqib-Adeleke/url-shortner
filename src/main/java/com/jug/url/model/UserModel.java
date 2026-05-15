@@ -18,27 +18,27 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
+@Table(name = "users")
 public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-//    @Column(name = "id")
+    @Column(name = "id")
     private UUID id;
-//    @Column(name = "name")
+    @Column(name = "name")
     private String name;
-//    @Column(name = "email")
+    @Column(name = "email")
     private String email;
-//    @Column(name = "password")
+    @Column(name = "password")
     private String password;
     @ElementCollection(fetch = FetchType.EAGER)
-//    @CollectionTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"))
-//    @Column(name = "role")
+    @CollectionTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
     private Set<Roles> roles;
     @CreationTimestamp
-//    @Column(name = "created_date")
+    @Column(name = "created_date")
     LocalDateTime createdDate;
     @UpdateTimestamp
-//    @Column(name = "updated_date")
+    @Column(name = "updated_date")
     LocalDateTime updatedDate;
 }
