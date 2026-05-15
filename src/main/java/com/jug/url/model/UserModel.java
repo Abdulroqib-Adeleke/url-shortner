@@ -3,6 +3,7 @@ package com.jug.url.model;
 import com.jug.url.enums.Roles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,28 +17,28 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user")
+@Builder
+
 public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
+//    @Column(name = "id")
     private UUID id;
-
+//    @Column(name = "name")
     private String name;
-
+//    @Column(name = "email")
     private String email;
-
+//    @Column(name = "password")
     private String password;
-
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role")
+//    @CollectionTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"))
+//    @Column(name = "role")
     private Set<Roles> roles;
-
     @CreationTimestamp
-    LocalDateTime createdAt;
-
+//    @Column(name = "created_date")
+    LocalDateTime createdDate;
     @UpdateTimestamp
-    LocalDateTime updatedAt;
+//    @Column(name = "updated_date")
+    LocalDateTime updatedDate;
 }
