@@ -13,4 +13,10 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>("Error: " + ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex){
+
+        return new ResponseEntity<>("Error: " + ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 }

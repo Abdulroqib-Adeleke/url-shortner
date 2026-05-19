@@ -9,4 +9,5 @@ public interface UserService {
 
     ResponseWrapper<AuthResponse> signup(CreateUserRequest payload);
     ResponseWrapper<AuthResponse> login(LoginRequest payload);
+    void logout();
 }

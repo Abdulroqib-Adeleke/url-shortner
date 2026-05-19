@@ -25,8 +25,7 @@ public class UserAuthService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<UserModel> userModelOptional = userModelRepository.findByEmail(email);
 
-        if(userModelOptional.isEmpty()) throw new ResourceNotFoundException("User not found");
-
+        if (userModelOptional.isEmpty()) throw new ResourceNotFoundException("User not found!");
         UserModel user = userModelOptional.get();
 
         Set<GrantedAuthority> authorities = user.getRoles()
@@ -34,6 +33,6 @@ public class UserAuthService implements UserDetailsService {
                 .map(item -> new SimpleGrantedAuthority(item.name()))
                 .collect(Collectors.toSet());
 
-        return new AuthUserDetails(user.getEmail(), user.getPassword(), authorities);
+        return new AuthUserDetails(user.getEmail(),user.getPassword(),authorities);
     }
 }

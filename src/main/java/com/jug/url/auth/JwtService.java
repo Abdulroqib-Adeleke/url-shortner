@@ -19,9 +19,11 @@ public class JwtService {
     @Value("${JWT_SECRET}")
     public String secret;
 
-    public String generateToken(String email, Set<Roles> userRoles) { // Use email as username
+    public String generateToken(String email, Set<Roles> userRoles, String activeSessionId, UUID userID) { // Use email as username
         Map<String, Object> claims = new HashMap<>();
         claims.put("role",userRoles.stream().map(Enum::name).collect(Collectors.toSet()));
+        claims.put("sessionId", activeSessionId);
+        claims.put("tenancyId", String.valueOf(userID));
         return createToken(claims, email);
     }
 
@@ -41,7 +43,18 @@ public class JwtService {
     }
 
     public String extractUsername(String token) {
+
         return extractAllClaims(token).getSubject();
+    }
+
+    public String extractUserSessionId(String token) {
+        Claims claims = extractAllClaims(token);
+        return  (String) claims.get("sessionId");
+    }
+
+    public String extractTenancyId(String token) {
+        Claims claims = extractAllClaims(token);
+        return  (String) claims.get("tenancyId");
     }
 
     public Date extractExpiration(String token) {

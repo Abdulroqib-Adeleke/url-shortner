@@ -9,5 +9,6 @@ import java.util.UUID;
 public interface UserLoginSessionRepository extends JpaRepository<UserLoginSession, UUID> {
 
     Optional<UserLoginSession> findByUserId(UUID userId);
+    void deleteByUserId(UUID userId);
 
 }
