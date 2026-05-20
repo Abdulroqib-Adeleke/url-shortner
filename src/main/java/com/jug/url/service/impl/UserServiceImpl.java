@@ -6,7 +6,9 @@ import com.jug.url.dto.request.CreateUserRequest;
 import com.jug.url.dto.request.LoginRequest;
 import com.jug.url.dto.response.AuthResponse;
 import com.jug.url.dto.response.LogoutResponse;
+import com.jug.url.dto.response.ProfileResponse;
 import com.jug.url.dto.response.ResponseWrapper;
+import com.jug.url.enums.Roles;
 import com.jug.url.exceptions.AccessDeniedException;
 import com.jug.url.exceptions.BadRequestException;
 import com.jug.url.exceptions.ResourceNotFoundException;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -100,6 +103,11 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public ResponseWrapper<ProfileResponse> userProfile() {
+        return buildUserProfile();
+    }
+
 
     private ResponseWrapper<AuthResponse> buildAuthResponse(UUID id, String token, String message, HttpStatusCode statusCode){
         AuthResponse response = new AuthResponse(id,token);
@@ -107,6 +115,21 @@ public class UserServiceImpl implements UserService {
                 .data(response)
                 .message(message)
                 .statusCode(statusCode)
+                .build();
+    }
+
+    private ResponseWrapper<ProfileResponse> buildUserProfile(){
+        Optional<UserProxy> userProxyOptional = securityUtilsService.getPrincipal();
+
+        ProfileResponse profile = ProfileResponse.builder()
+                .message("Welcome")
+                .name(userProxyOptional.get().getName())
+                .email(userProxyOptional.get().getEmail())
+                .roles(userProxyOptional.get().getRoles())
+                .build();
+
+        return ResponseWrapper.<ProfileResponse>builder()
+                .data(profile)
                 .build();
     }
 }
