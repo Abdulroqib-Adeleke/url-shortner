@@ -1,6 +1,7 @@
 package com.jug.url.utils;
 
 import com.jug.url.auth.AuthUserDetails;
+import com.jug.url.dto.proxy.UserProxy;
 import com.jug.url.enums.Roles;
 import com.jug.url.repository.UserModelRepository;
 import lombok.RequiredArgsConstructor;

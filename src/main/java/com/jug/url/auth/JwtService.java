@@ -1,5 +1,6 @@
 package com.jug.url.auth;
 
+import com.jug.url.dto.helper.TokenClaims;
 import com.jug.url.enums.Roles;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,15 +16,14 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtService {
-
     @Value("${JWT_SECRET}")
     public String secret;
 
-    public String generateToken(String email, Set<Roles> userRoles, String activeSessionId, UUID userID) { // Use email as username
+    public String generateToken(String email, Set<Roles> userRoles,String activeSessionId,UUID userId) { // Use email as username
         Map<String, Object> claims = new HashMap<>();
         claims.put("role",userRoles.stream().map(Enum::name).collect(Collectors.toSet()));
-        claims.put("sessionId", activeSessionId);
-        claims.put("tenancyId", String.valueOf(userID));
+        claims.put("sessionId",activeSessionId);
+        claims.put("tenancyId",String.valueOf(userId));
         return createToken(claims, email);
     }
 
@@ -42,29 +42,30 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    //TODO: extract and remove this method
     public String extractUsername(String token) {
-
         return extractAllClaims(token).getSubject();
     }
 
-    public String extractUserSessionId(String token) {
-        Claims claims = extractAllClaims(token);
-        return  (String) claims.get("sessionId");
-    }
-
-    public String extractTenancyId(String token) {
-        Claims claims = extractAllClaims(token);
-        return  (String) claims.get("tenancyId");
-    }
-
+    //TODO: extract and remove this method
     public Date extractExpiration(String token) {
         return extractAllClaims(token).getExpiration();
     }
 
-    public Set<Roles> extractRoles(String token){
+    public TokenClaims extractTokenClaims(String token){
         Claims claims = extractAllClaims(token);
-        List<String> roles = claims.get("role", List.class);
-        return roles.stream().map(Roles::valueOf).collect(Collectors.toSet());
+        String username = claims.getSubject();
+        String sessionId = (String)claims.get("sessionId");
+        List<String> roles = claims.get("role",List.class);
+        Set<Roles> rolesSet = roles.stream().map(Roles::valueOf).collect(Collectors.toSet());
+        String tenancyId = (String)claims.get("tenancyId");
+
+        return TokenClaims.builder()
+                .userSessionId(sessionId)
+                .roles(rolesSet)
+                .username(username)
+                .tenancyId(tenancyId)
+                .build();
     }
 
 

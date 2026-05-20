@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -16,24 +17,34 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
 
-    private final SecConfig secConfig;
+    private final UserDetailsService userDetailsService;
+    private  final SecConfig secConfig;
+    private  final JwtAuthFilter jwtAuthFilter;
+
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
 
-        return
-                http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(
-                        auth -> auth
-                                .requestMatchers("/auth/signup").permitAll()
-                                .requestMatchers("/auth/login").permitAll()
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
+                        .requestMatchers("/auth/signup").permitAll()
+                        .requestMatchers("/auth/login").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(
-                        SessionCreationPolicy.STATELESS))
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Set custom authentication provider
                 .authenticationProvider(secConfig.authenticationProvider())
-                .build();
+
+                // Add JWT filter before Spring Security's default filter
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 
+
+
 }
+
