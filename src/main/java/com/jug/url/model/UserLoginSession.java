@@ -18,18 +18,24 @@ import java.util.UUID;
 @Builder
 @Table(name = "user_login_session")
 public class UserLoginSession {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
+
     @Column(name = "active_session_id")
     private String activeSessionId;
+
     @Column(name = "user_id")
     private UUID userId;
+
+    private String refreshToken;
 
     @CreationTimestamp
     @Column(name = "created_date")
     LocalDateTime createdDate;
+
     @UpdateTimestamp
     @Column(name = "updated_date")
     LocalDateTime updatedDate;

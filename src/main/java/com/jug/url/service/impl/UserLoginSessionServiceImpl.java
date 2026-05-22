@@ -21,13 +21,14 @@ public class UserLoginSessionServiceImpl implements UserLoginSessionService {
 
     @Override
     @Transactional
-    public void createLoginSession(String sessionId, UUID userId) {
+    public void createLoginSession(String sessionId, UUID userId, String refreshToken) {
         Optional<UserLoginSession> activeSessionOptional = userLoginSessionRepository.findByUserId(userId);
 
         if(activeSessionOptional.isEmpty()){
             UserLoginSession newUserSession = UserLoginSession.builder()
                     .activeSessionId(sessionId)
                     .userId(userId)
+                    .refreshToken(refreshToken)
                     .build();
             userLoginSessionRepository.save(newUserSession);
         }else{

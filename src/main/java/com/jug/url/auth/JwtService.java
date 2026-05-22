@@ -3,6 +3,7 @@ package com.jug.url.auth;
 import com.jug.url.dto.helper.TokenClaims;
 import com.jug.url.enums.Roles;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -27,7 +28,25 @@ public class JwtService {
         return createToken(claims, email);
     }
 
+    public String generateRefreshToken(String email, Set<Roles> userRoles,String activeSessionId,UUID userId) { // Use email as username
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role",userRoles.stream().map(Enum::name).collect(Collectors.toSet()));
+        claims.put("sessionId",activeSessionId);
+        claims.put("tenancyId",String.valueOf(userId));
+        return createRefreshToken(claims, email);
+    }
+
     private String createToken(Map<String, Object> claims, String email) {
+        return Jwts.builder()
+                .claims(claims)
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
+                .signWith(getSignKey())
+                .compact();
+    }
+
+    private String createRefreshToken(Map<String, Object> claims, String email) {
         return Jwts.builder()
                 .claims(claims)
                 .subject(email)
@@ -40,6 +59,15 @@ public class JwtService {
     private SecretKey getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            extractAllClaims(token);
+            return true;
+        } catch (JwtException ex) {
+            return false;
+        }
     }
 
     //TODO: extract and remove this method
