@@ -16,7 +16,8 @@ public class CompanyProfile {
     LocalDateTime createdDate;
     LocalDateTime updatedDate;
 
-    public CompanyProfile(UUID id, String adminName, UUID adminId, String name, String supportEmail, LocalDateTime createdDate, LocalDateTime updatedDate) {
+    public CompanyProfile(UUID id, String adminName, UUID adminId, String name, String supportEmail,
+                          LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.id = id;
         this.adminName = adminName;
         this.adminId = adminId;

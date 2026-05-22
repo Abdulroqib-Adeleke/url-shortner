@@ -21,7 +21,8 @@ public interface UserModelRepository extends JpaRepository<UserModel, UUID> {
             "u.password," +
             "u.email," +
             "u.createdDate," +
-            "u.updatedDate) FROM UserModel u WHERE u.email = :email")
+            "u.updatedDate," +
+            "u.userType) FROM UserModel u WHERE u.email = :email")
     Optional<UserProxy>findUserByEmail(@Param("email") String email);
 
     @Query("SELECT u.roles FROM UserModel u WHERE u.email = :email")

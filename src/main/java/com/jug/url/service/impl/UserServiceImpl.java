@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
         return buildUserProfile(profile);
     }
 
-    public
+//    public
 
 
     private ResponseWrapper<AuthResponse> buildAuthResponse(UUID id, String token, String refreshToken, String message, HttpStatusCode statusCode){
