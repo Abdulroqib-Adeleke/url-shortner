@@ -27,7 +27,7 @@ public class Company {
     @Column(name = "name")
     private String name;
     @Column(name = "support_email")
-    private String email;
+    private String supportEmail;
     @CreationTimestamp
     @Column(name = "created_date")
     LocalDateTime createdDate;

@@ -37,10 +37,10 @@ public class AuthController {
         return userService.login(payload);
     }
 
-    @PostMapping("/refresh")
-    public ResponseWrapper<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest payload){
-        return userLoginSessionService.getRefreshToken(payload.)
-    }
+//    @PostMapping("/refresh")
+//    public ResponseWrapper<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest payload){
+//        return userLoginSessionService.getRefreshToken(payload.)
+//    }
 
     @PutMapping("/logout")
     public ResponseWrapper<LogoutResponse> logout(){
