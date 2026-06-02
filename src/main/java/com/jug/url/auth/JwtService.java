@@ -28,30 +28,12 @@ public class JwtService {
         return createToken(claims, email);
     }
 
-    public String generateRefreshToken(String email, Set<Roles> userRoles,String activeSessionId,UUID userId) { // Use email as username
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("role",userRoles.stream().map(Enum::name).collect(Collectors.toSet()));
-        claims.put("sessionId",activeSessionId);
-        claims.put("tenancyId",String.valueOf(userId));
-        return createRefreshToken(claims, email);
-    }
-
     private String createToken(Map<String, Object> claims, String email) {
         return Jwts.builder()
                 .claims(claims)
                 .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
-                .signWith(getSignKey())
-                .compact();
-    }
-
-    private String createRefreshToken(Map<String, Object> claims, String email) {
-        return Jwts.builder()
-                .claims(claims)
-                .subject(email)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(getSignKey())
                 .compact();
     }

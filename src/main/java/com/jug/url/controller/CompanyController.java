@@ -7,25 +7,23 @@ import com.jug.url.dto.response.ResponseWrapper;
 import com.jug.url.service.CompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@RestController("/agent")
+@RestController("/api/company")
 @RequiredArgsConstructor
 public class CompanyController {
+
     private final CompanyService companyService;
 
-    @PostMapping("/create")
-    public ResponseWrapper<CreateCompanyResponse> createCompany(@RequestBody @Valid CreateCompanyRequest payload){
+    @PostMapping("/create-company")
+    public  ResponseWrapper<CreateCompanyResponse> createCompany(@RequestBody @Valid CreateCompanyRequest payload){
         return companyService.createCompany(payload);
     }
 
-    @GetMapping("/profile")
-    public ResponseWrapper<CompanyProfile> getAgentProfile(@RequestBody @Valid UUID id){
-        return companyService.fetchCompanyProfile(id);
+    @GetMapping("/company-profile")
+    public  ResponseWrapper<CompanyProfile> getCompanyProfile(@RequestParam(name = "adminId",required = false)UUID adminId){
+        return companyService.fetchCompanyProfile(adminId);
     }
 }

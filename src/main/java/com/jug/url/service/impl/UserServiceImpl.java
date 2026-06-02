@@ -58,8 +58,7 @@ public class UserServiceImpl implements UserService {
         UserModel savedUser = userModelRepository.save(user);
         String sessionId = LocalDateTime.now().toString();
         String token = jwtService.generateToken(payload.getEmail(), payload.getRoles(), sessionId, savedUser.getId());
-        return buildAuthResponse(savedUser.getId(),token, null,
-                "Signup successful",
+        return buildAuthResponse(savedUser.getId(),token, "Signup successful",
                 HttpStatusCode.valueOf(HttpStatus.CREATED.value()));
     }
 
@@ -76,12 +75,12 @@ public class UserServiceImpl implements UserService {
 
             String sessionId = LocalDateTime.now().toString();
             String token = jwtService.generateToken(payload.getEmail(), user.getRoles(),sessionId,user.getId());
-            String refreshToken = jwtService.generateRefreshToken(payload.getEmail(), user.getRoles(),sessionId,user.getId());
+            //String refreshToken = jwtService.generateRefreshToken(payload.getEmail(), user.getRoles(),sessionId,user.getId());
 
 
-            userLoginSessionService.createLoginSession(sessionId,user.getId(), refreshToken);
+            userLoginSessionService.createLoginSession(sessionId,user.getId());
 
-            return  buildAuthResponse(user.getId(), token, refreshToken,"Login Successful",HttpStatusCode.valueOf(HttpStatus.OK.value()));
+            return  buildAuthResponse(user.getId(), token,"Login Successful",HttpStatusCode.valueOf(HttpStatus.OK.value()));
         }catch (BadCredentialsException ex){
             log.error("Error occurred: ",ex);
             throw new AccessDeniedException("Invalid authentication credentials");
@@ -117,8 +116,8 @@ public class UserServiceImpl implements UserService {
 //    public
 
 
-    private ResponseWrapper<AuthResponse> buildAuthResponse(UUID id, String token, String refreshToken, String message, HttpStatusCode statusCode){
-        AuthResponse response = new AuthResponse(id, token, refreshToken);
+    private ResponseWrapper<AuthResponse> buildAuthResponse(UUID id, String token, String message, HttpStatusCode statusCode){
+        AuthResponse response = new AuthResponse(id, token);
         return ResponseWrapper.<AuthResponse>builder()
                 .data(response)
                 .message(message)

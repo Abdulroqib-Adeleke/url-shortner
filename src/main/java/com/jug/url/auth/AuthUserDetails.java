@@ -4,24 +4,23 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public class AuthUserDetails implements UserDetails {
 
     private String password;
-    private String username;
+    private String userName;
     private Set<GrantedAuthority> authorities;
 
-    public AuthUserDetails(String username, String password, Set<GrantedAuthority> authorities) {
-        this.username = username;
+    public AuthUserDetails(String userName,String password,Set<GrantedAuthority> authorities) {
+        this.userName = userName;
         this.password = password;
         this.authorities = authorities;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return this.authorities;
     }
 
     @Override
@@ -31,7 +30,7 @@ public class AuthUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.userName;
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Service
 public interface UserLoginSessionService {
-    void createLoginSession(String sessionId, UUID userId, String refreshToken);
+    void createLoginSession(String sessionId, UUID userId);
     void invalidateLoginSession(UUID userId);
     String getUserSession(UUID userId);
 }

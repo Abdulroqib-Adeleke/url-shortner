@@ -32,26 +32,26 @@ public class CompanyServiceImpl implements CompanyService {
     public ResponseWrapper<CreateCompanyResponse> createCompany(CreateCompanyRequest payload) {
         Optional<UserProxy> loggedInUser = securityUtilsService.getPrincipal();
         if (loggedInUser.isEmpty()) throw new AccessDeniedException("error occurred: access denied");
-        if (companyRepository.existsByAdminId(loggedInUser.get().getId())) throw new BadRequestException("multiple companies not allowed");
-        Optional<Company> companyOptional = companyRepository.findByName(payload.getCompanyName());
 
+        if (companyRepository.existsByAdminId(loggedInUser.get().getId())) throw  new BadRequestException("multiple companies not allowed!");
+
+        Optional<Company> companyOptional = companyRepository.findByName(payload.getCompanyName());
         if (companyOptional.isPresent()){
-            String message = String.format("%s is already taken", payload.getCompanyName());
+            String message = String.format("%s is already taken!",payload.getCompanyName());
             throw new BadRequestException(message);
         }
-
         Company company = Company.builder()
                 .name(payload.getCompanyName())
-                .supportEmail(payload.getEmail())
+                .supportEmail(payload.getSupportEmail())
                 .adminId(loggedInUser.get().getId())
                 .build();
+
         Company savedCompany = companyRepository.save(company);
         CreateCompanyResponse response = new CreateCompanyResponse(String.valueOf(savedCompany.getId()));
-
         return ResponseWrapper.<CreateCompanyResponse>builder()
                 .data(response)
                 .statusCode(HttpStatus.CREATED)
-                .message("Company successfully created")
+                .message("Company successfully created!")
                 .build();
     }
 

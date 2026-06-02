@@ -2,7 +2,6 @@ package com.jug.url.controller;
 
 import com.jug.url.dto.request.CreateUserRequest;
 import com.jug.url.dto.request.LoginRequest;
-import com.jug.url.dto.request.RefreshTokenRequest;
 import com.jug.url.dto.response.AuthResponse;
 import com.jug.url.dto.response.LogoutResponse;
 import com.jug.url.dto.response.ProfileResponse;
@@ -36,11 +35,6 @@ public class AuthController {
     public ResponseWrapper<AuthResponse> authenticateAndGetToken(@RequestBody @Valid LoginRequest payload) {
         return userService.login(payload);
     }
-
-//    @PostMapping("/refresh")
-//    public ResponseWrapper<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest payload){
-//        return userLoginSessionService.getRefreshToken(payload.)
-//    }
 
     @PutMapping("/logout")
     public ResponseWrapper<LogoutResponse> logout(){

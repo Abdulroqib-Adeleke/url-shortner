@@ -30,7 +30,7 @@ public class UserLoginSession {
     @Column(name = "user_id")
     private UUID userId;
 
-    private String refreshToken;
+    //private String refreshToken;
 
     @CreationTimestamp
     @Column(name = "created_date")

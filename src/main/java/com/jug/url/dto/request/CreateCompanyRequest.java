@@ -9,8 +9,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class CreateCompanyRequest {
 
-    @Email(message = "please provide a valid mail")
-    private String email;
+    @Email(message = "please provide a valid email")
+    private String supportEmail;
     @NotBlank(message = "please provide company name")
     private String companyName;
 }
