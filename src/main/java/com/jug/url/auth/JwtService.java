@@ -17,10 +17,11 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtService {
+
     @Value("${JWT_SECRET}")
     public String secret;
 
-    public String generateToken(String email, Set<Roles> userRoles,String activeSessionId,UUID userId) { // Use email as username
+    public String generateToken(String email, Set<Roles> userRoles,String activeSessionId,UUID userId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role",userRoles.stream().map(Enum::name).collect(Collectors.toSet()));
         claims.put("sessionId",activeSessionId);
@@ -33,7 +34,7 @@ public class JwtService {
                 .claims(claims)
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(getSignKey())
                 .compact();
     }
@@ -41,15 +42,6 @@ public class JwtService {
     private SecretKey getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            extractAllClaims(token);
-            return true;
-        } catch (JwtException ex) {
-            return false;
-        }
     }
 
     //TODO: extract and remove this method

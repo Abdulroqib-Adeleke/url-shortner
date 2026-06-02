@@ -1,16 +1,17 @@
 package com.jug.url.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jug.url.dto.helper.TokenClaims;
-import com.jug.url.exceptions.AccessDeniedException;
-import com.jug.url.exceptions.ErrorResponse;
-import com.jug.url.service.UserLoginSessionService;
+import com.naijajug.saasurlshortner.dto.helper.TokenClaims;
+import com.naijajug.saasurlshortner.exceptions.AccessDeniedException;
+import com.naijajug.saasurlshortner.exceptions.ErrorResponse;
+import com.naijajug.saasurlshortner.service.UserLoginSessionService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -75,6 +76,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }catch (ExpiredJwtException ex){
             formatResponse(response,"Invalid auth token",HttpStatus.FORBIDDEN,HttpServletResponse.SC_FORBIDDEN);
         }catch (Exception ex){
+            ex.printStackTrace();
             formatResponse(response,"Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR,HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

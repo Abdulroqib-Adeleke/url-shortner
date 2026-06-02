@@ -4,9 +4,7 @@ import com.jug.url.dto.request.CreateUserRequest;
 import com.jug.url.dto.request.LoginRequest;
 import com.jug.url.dto.response.AuthResponse;
 import com.jug.url.dto.response.LogoutResponse;
-import com.jug.url.dto.response.ProfileResponse;
 import com.jug.url.dto.response.ResponseWrapper;
-import com.jug.url.service.UserLoginSessionService;
 import com.jug.url.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,30 +12,34 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
-    private final UserLoginSessionService userLoginSessionService;
 
-    @GetMapping("/profile")
-    public ResponseWrapper<ProfileResponse>userProfile() {
-        return userService.userProfile();
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "Welcome this endpoint is not secure";
     }
 
-    @PostMapping("/signup")
-    public ResponseWrapper<AuthResponse> addNewUser(@RequestBody @Valid CreateUserRequest payload) {
-        return userService.signup(payload);
+    @PostMapping("/sysadmin/signup")
+    public ResponseWrapper<AuthResponse> signupSystemAdmin(@RequestBody @Valid CreateUserRequest payload) {
+        return userService.signupSystemAmin(payload);
+    }
+
+    @PostMapping("/agent/signup")
+    public ResponseWrapper<AuthResponse> signupAgent(@RequestBody @Valid CreateUserRequest payload) {
+        return userService.signupAgent(payload);
     }
 
     @PostMapping("/login")
-    public ResponseWrapper<AuthResponse> authenticateAndGetToken(@RequestBody @Valid LoginRequest payload) {
-        return userService.login(payload);
+    public  ResponseWrapper<AuthResponse> login(@RequestBody @Valid LoginRequest payload) {
+        return  userService.login(payload);
     }
 
     @PutMapping("/logout")
-    public ResponseWrapper<LogoutResponse> logout(){
-        return userService.logout();
+    public  ResponseWrapper<LogoutResponse> logout() {
+        return  userService.logOut();
     }
 }

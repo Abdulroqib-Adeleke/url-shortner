@@ -29,8 +29,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers("/auth/signup").permitAll()
-                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/api/auth/sysadmin/signup").permitAll()
+                        .requestMatchers("/api/auth/agent/signup").permitAll()
+                        .requestMatchers("/api/auth/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -47,4 +48,3 @@ public class SecurityConfig {
 
 
 }
-
