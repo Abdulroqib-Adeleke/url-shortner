@@ -17,7 +17,7 @@ public interface EnableServiceRequestRepository extends JpaRepository<EnableServ
     @Query("SELECT new com.jug.url.dto.proxy.EnableServiceRequestProxy(e.id," +
             "e.serviceId," +
             "p.service," +
-            "a.companyId," +
+            "c.adminId," +
             "c.name," +
             "e.status," +
             "e.createdDate," +
