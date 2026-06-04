@@ -15,7 +15,6 @@ import com.jug.url.utils.SecurityUtilsService;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,10 +23,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
-
-    private final CompanyRepository companyRepository;
-    private final SecurityUtilsService securityUtilsService;
-
+    private  final CompanyRepository companyRepository;
+    private  final SecurityUtilsService securityUtilsService;
     @Override
     public ResponseWrapper<CreateCompanyResponse> createCompany(CreateCompanyRequest payload) {
         Optional<UserProxy> loggedInUser = securityUtilsService.getPrincipal();
@@ -59,10 +56,8 @@ public class CompanyServiceImpl implements CompanyService {
     public ResponseWrapper<CompanyProfile> fetchCompanyProfile(UUID adminId) {
         Optional<UserProxy> loggedInUser = securityUtilsService.getPrincipal();
         if (loggedInUser.isEmpty()) throw new AccessDeniedException("error occurred: access denied");
-        UserProxy userProxy = loggedInUser.get();
-
-        UUID callerAdminId = getCallerAdminId(userProxy.getUserType(), adminId, userProxy);
-
+        UserProxy user = loggedInUser.get();
+        UUID callerAdminId = getCallerAdminId(user.getUserType(),adminId,user);
         Optional<CompanyProfile> companyProfileOptional = companyRepository.fetchCompanyProfile(callerAdminId);
 
         CompanyProfile profile = companyProfileOptional.orElse(null);
@@ -70,14 +65,19 @@ public class CompanyServiceImpl implements CompanyService {
         return ResponseWrapper.<CompanyProfile>builder()
                 .data(profile)
                 .statusCode(HttpStatus.OK)
-                .message(profile==null ? "no company created yet" : "company profile fetch successfully")
+                .message(profile == null? "no company created yet" : "Company profile fetched successfully")
                 .build();
     }
 
-    private UUID getCallerAdminId(UserType userType, @Nullable UUID adminId, UserProxy userProxy){
-        if (userType.equals(UserType.ADMIN)) return userProxy.getId();
-        if (userType.equals(UserType.SYSTEM_ADMIN)) return adminId;
+    @Override
+    //TODO: implement this
+    public ResponseWrapper<CompanyProfile> fetchCompanyById(UUID companyId) {
+        return null;
+    }
 
-        return userProxy.getId();
+    private UUID getCallerAdminId(UserType userType, @Nullable UUID adminId,UserProxy user){
+        if (userType.equals(UserType.ADMIN)) return  user.getId();
+        if (userType.equals(UserType.SYSTEM_ADMIN) && adminId != null) return  adminId;
+        return  user.getId();
     }
 }

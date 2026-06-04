@@ -10,5 +10,7 @@ import java.util.UUID;
 public interface CompanyService {
 
     ResponseWrapper<CreateCompanyResponse> createCompany(CreateCompanyRequest payload);
+
     ResponseWrapper<CompanyProfile> fetchCompanyProfile(UUID adminId);
+    ResponseWrapper<CompanyProfile> fetchCompanyById(UUID companyId);
 }

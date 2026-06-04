@@ -13,24 +13,25 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_login_session")
-public class UserLoginSession {
+@Builder
+@Table(name = "agent_service_offering")
+public class AgentServiceOffering {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
     private UUID id;
-    @Column(name = "active_session_id")
-    private String activeSessionId;
-    @Column(name = "user_id")
-    private UUID userId;
-    @Column(name = "created_date")
+    @Column(name = "principal_service_id")
+    private UUID principalServiceId;
+    @Column(name = "active")
+    private boolean active;
+    @Column(name = "company_id")
+    private UUID companyId;
     @CreationTimestamp
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
     @UpdateTimestamp
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 }
-

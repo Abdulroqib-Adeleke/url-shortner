@@ -25,7 +25,8 @@ public class UserProxy {
     public UserProxy(UUID id, String name,
                      String password, String email,
                      LocalDateTime createdDate,
-                     LocalDateTime updatedDate, UserType userType) {
+                     LocalDateTime updatedDate,
+                     UserType userType) {
         this.id = id;
         this.name = name;
         this.password = password;

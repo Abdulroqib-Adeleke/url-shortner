@@ -16,9 +16,10 @@ import java.util.UUID;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+
 @Table(name = "users")
 public class UserModel {
 
@@ -42,8 +43,8 @@ public class UserModel {
     private UserType userType;
     @CreationTimestamp
     @Column(name = "created_date")
-    LocalDateTime createdDate;
+    private LocalDateTime createdDate;
     @UpdateTimestamp
     @Column(name = "updated_date")
-    LocalDateTime updatedDate;
+    private LocalDateTime updatedDate;
 }

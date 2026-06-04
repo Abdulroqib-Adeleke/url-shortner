@@ -1,5 +1,6 @@
 package com.jug.url.model;
 
+import com.jug.url.enums.ServiceRequestStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,21 +17,24 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_login_session")
-public class UserLoginSession {
+@Table(name = "enable_service_request")
+public class EnableServiceRequestModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
     private UUID id;
-    @Column(name = "active_session_id")
-    private String activeSessionId;
-    @Column(name = "user_id")
-    private UUID userId;
-    @Column(name = "created_date")
+    @Column(name = "service_id")
+    private UUID serviceId;
+    @Column(name = "admin_id")
+    private UUID adminId;
+    @Column(name = "service_request_status")
+    @Enumerated(EnumType.STRING)
+    private ServiceRequestStatus status;
     @CreationTimestamp
-    private LocalDateTime createdDate;
+    @Column(name = "created_date")
+    LocalDateTime createdDate;
     @UpdateTimestamp
     @Column(name = "updated_date")
-    private LocalDateTime updatedDate;
+    LocalDateTime updatedDate;
 }
 

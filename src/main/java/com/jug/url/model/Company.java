@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 @Table(name = "company")
 public class Company {
 
@@ -30,8 +30,8 @@ public class Company {
     private String supportEmail;
     @CreationTimestamp
     @Column(name = "created_date")
-    LocalDateTime createdDate;
+    private LocalDateTime createdDate;
     @UpdateTimestamp
     @Column(name = "updated_date")
-    LocalDateTime updatedDate;
+    private LocalDateTime updatedDate;
 }
