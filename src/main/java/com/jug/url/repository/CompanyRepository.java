@@ -14,10 +14,21 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
     Optional<Company> findByName(String name);
     boolean existsByAdminId(UUID adminId);
 
-    @Query("SELECT new com.jug.url.dto.response.CompanyProfile(c.id," +
+    @Query("SELECT new com.jug.url.dto.response.CompanyProfile(" +
+            "c.id," +
             "u.name,c.adminId," +
             "c.name,c.supportEmail," +
             "c.createdDate," +
-            "c.updatedDate) FROM Company c JOIN UserModel u ON u.id = c.adminId")
+            "c.updatedDate) FROM Company c JOIN UserModel u ON u.id = c.adminId WHERE c.adminId = :adminId")
     Optional<CompanyProfile> fetchCompanyProfile(@Param("adminId") UUID adminId);
+
+    @Query("SELECT new com.jug.url.dto.response.CompanyProfile(" +
+            "c.id, " +
+            "u.name," +
+            "c.adminId," +
+            "c.name," +
+            "c.supportEmail, " +
+            "c.createdDate, " +
+            "c.updatedDate)FROM Company  c JOIN UserModel u ON u.id = c.adminId WHERE c.id = :id")
+    Optional<CompanyProfile> fetchCompanyProfileById(@Param("id") UUID id);
 }

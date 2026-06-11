@@ -15,10 +15,11 @@ public class CustomerProxy {
     LocalDateTime createdDate;
     LocalDateTime updatedDate;
     private String companyName;
+    private UUID adminId;
 
     public CustomerProxy(String name, UUID id, String email, UUID userId, UUID companyId,
                          LocalDateTime createdDate,
-                         LocalDateTime updatedDate,String companyName) {
+                         LocalDateTime updatedDate, String companyName, UUID adminId) {
         this.name = name;
         this.id = id;
         this.email = email;
@@ -27,5 +28,6 @@ public class CustomerProxy {
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.companyName = companyName;
+        this.adminId = adminId;
     }
 }
