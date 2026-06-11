@@ -1,5 +1,6 @@
 package com.jug.url.service.impl;
 
+import com.jug.url.dto.proxy.UserProxy;
 import com.jug.url.dto.request.CreateCustomerRequest;
 import com.jug.url.dto.response.AuthResponse;
 import com.jug.url.dto.response.CompanyProfile;
@@ -11,6 +12,7 @@ import com.jug.url.repository.CustomerRepository;
 import com.jug.url.service.CompanyService;
 import com.jug.url.service.CustomerService;
 import com.jug.url.service.UserService;
+import com.jug.url.utils.SecurityUtilsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,19 @@ public class CustomerServiceImpl implements CustomerService {
     private  final CustomerRepository customerRepository;
     private final UserService userService;
     private  final CompanyService companyService;
+    private final SecurityUtilsService securityUtilsService;
 
     @Override
     //TODO: implement this
     public ResponseWrapper<CustomerProfile> getCustomerProfileByUserId(UUID userId) {
         return null;
+    }
+
+    @Override
+    public ResponseWrapper<CustomerProfile> fetchCustomerProfile() {
+        UserProxy loggedInUser = securityUtilsService.getSecurityPrincipal();
+        securityUtilsService.validateCustomerInRole();
+        return getCustomerProfileByUserId(loggedInUser.getId());
     }
 
     @Override

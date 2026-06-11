@@ -47,4 +47,9 @@ public class SecurityUtilsService {
         UserProxy loggedInUser = getSecurityPrincipal();
         if (!loggedInUser.getRoles().contains(Roles.SYSTEM_ADMIN)) throw new AccessDeniedException("Unauthorized to perform this action!");
     }
+
+    public void validateCustomerInRole() {
+        UserProxy loggedInUser = getSecurityPrincipal();
+        if(!loggedInUser.getRoles().contains(Roles.USER)) throw new AccessDeniedException("Unauthorized to perform this action!");
+    }
 }

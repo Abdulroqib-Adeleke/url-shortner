@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface CustomerService {
 
     ResponseWrapper<CustomerProfile> getCustomerProfileByUserId(UUID userId);
+    ResponseWrapper<CustomerProfile> fetchCustomerProfile();
     ResponseWrapper<AuthResponse> createCustomer(CreateCustomerRequest payload);
 
 }
