@@ -31,6 +31,7 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/api/auth/sysadmin/signup").permitAll()
                         .requestMatchers("/api/auth/agent/signup").permitAll()
+                        .requestMatchers("/api/auth/customer/signup").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .anyRequest().authenticated()
                 )
