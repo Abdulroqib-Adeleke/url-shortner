@@ -1,5 +1,6 @@
 package com.jug.url.service.impl;
 
+import com.jug.url.dto.proxy.CustomerProxy;
 import com.jug.url.dto.proxy.UserProxy;
 import com.jug.url.dto.request.CreateCustomerRequest;
 import com.jug.url.dto.response.AuthResponse;
@@ -15,9 +16,11 @@ import com.jug.url.service.UserService;
 import com.jug.url.utils.SecurityUtilsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,9 +33,26 @@ public class CustomerServiceImpl implements CustomerService {
     private final SecurityUtilsService securityUtilsService;
 
     @Override
-    //TODO: implement this
     public ResponseWrapper<CustomerProfile> getCustomerProfileByUserId(UUID userId) {
-        return null;
+
+        Optional<CustomerProxy> customerProxyOptional = customerRepository.findCustomerByUserId(userId);
+        if(customerProxyOptional.isEmpty()) throw new ResourceNotFoundException("Customer not found");
+        CustomerProxy customerProxy = customerProxyOptional.get();
+
+        CustomerProfile customerProfile = new CustomerProfile(customerProxy.getId(),
+                customerProxy.getName(),
+                customerProxy.getEmail(),
+                customerProxy.getUserId(),
+                customerProxy.getCompanyId(),
+                customerProxy.getCreatedDate(),
+                customerProxy.getUpdatedDate(),
+                customerProxy.getCompanyName(),
+                customerProxy.getAdminId());
+        return ResponseWrapper.<CustomerProfile>builder()
+                .data(customerProfile)
+                .statusCode(HttpStatus.OK)
+                .message("Customer profile fetched successfully")
+                .build();
     }
 
     @Override
