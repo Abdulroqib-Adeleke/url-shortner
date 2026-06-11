@@ -2,6 +2,7 @@ package com.jug.url.service.impl;
 
 import com.jug.url.auth.JwtService;
 import com.jug.url.dto.helper.SavedUserResponse;
+import com.jug.url.dto.proxy.CustomerProxy;
 import com.jug.url.dto.proxy.UserProxy;
 import com.jug.url.dto.request.CreateUserRequest;
 import com.jug.url.dto.request.LoginRequest;
@@ -12,6 +13,7 @@ import com.jug.url.exceptions.AccessDeniedException;
 import com.jug.url.exceptions.BadRequestException;
 import com.jug.url.exceptions.ResourceNotFoundException;
 import com.jug.url.model.UserModel;
+import com.jug.url.repository.CustomerRepository;
 import com.jug.url.repository.UserModelRepository;
 import com.jug.url.service.UserLoginSessionService;
 import com.jug.url.service.UserService;
@@ -44,6 +46,7 @@ public class UserServiceImpl implements UserService {
     private final  AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private  final SecurityUtilsService securityUtilsService;
+    private final CustomerRepository customerRepository;
 
     @Override
     @Transactional
@@ -93,21 +96,24 @@ public class UserServiceImpl implements UserService {
         if (userModelOptional.isEmpty()) throw new ResourceNotFoundException("User not found!");
         UserModel user = userModelOptional.get();
         log.info("User details {}",user);
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(payload.getEmail(), payload.getPassword())
-            );
+        return getAuthResponseResponseWrapper(payload, user);
+    }
 
-            String sessionId = LocalDateTime.now().toString();
-            String token = jwtService.generateToken(payload.getEmail(), user.getRoles(),sessionId,user.getId());
+    @Override
+    public ResponseWrapper<AuthResponse> customerLogin(LoginRequest payload, UUID companyId) {
+        try{
+            Optional<CustomerProxy>customerProxyOptional = customerRepository.findCustomerByEmailAndCompanyId(payload.getEmail(), companyId);
+            if(customerProxyOptional.isEmpty()) throw new AccessDeniedException("Error: occurred: invalid credentials");
+            CustomerProxy customerProxy = customerProxyOptional.get();
 
+            Optional<UserModel> userModelOptional = userModelRepository.findById(customerProxy.getUserId());
 
-            userLoginSessionService.createLoginSession(sessionId,user.getId());
+            if(userModelOptional.isEmpty()) throw new AccessDeniedException("Invalid authentication credentials");
 
-            return  buildAuthResponse(user.getId(),token,"Login Successful",HttpStatusCode.valueOf(HttpStatus.OK.value()));
-        }catch (BadCredentialsException ex){
-            log.error("Error occurred: ",ex);
-            throw new AccessDeniedException("Invalid authentication credentials");
+            return getAuthResponseResponseWrapper(payload, userModelOptional.get());
+        }catch (Exception ex){
+            log.error("Error occurred: " , ex);
+            throw new BadRequestException(ex.getMessage());
         }
     }
 
@@ -147,5 +153,24 @@ public class UserServiceImpl implements UserService {
         userLoginSessionService.createLoginSession(sessionId,user.getId());
         String token  = jwtService.generateToken(email, agentRoles,sessionId,savedUser.getId());
         return new SavedUserResponse(savedUser.getId(),token);
+    }
+
+    private ResponseWrapper<AuthResponse> getAuthResponseResponseWrapper(LoginRequest payload, UserModel user) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getId().toString(), payload.getPassword())
+            );
+
+            String sessionId = LocalDateTime.now().toString();
+            String token = jwtService.generateToken(payload.getEmail(), user.getRoles(),sessionId, user.getId());
+
+
+            userLoginSessionService.createLoginSession(sessionId, user.getId());
+
+            return buildAuthResponse(user.getId(), token, "Login Successful", HttpStatusCode.valueOf(HttpStatus.OK.value()));
+        }catch (BadCredentialsException ex){
+            log.error("Error occurred: ",ex);
+            throw new AccessDeniedException("Invalid authentication credentials");
+        }
     }
 }

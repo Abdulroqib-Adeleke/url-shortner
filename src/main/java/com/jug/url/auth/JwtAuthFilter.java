@@ -45,7 +45,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         try {
             if (claims != null && claims.getUsername() != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getUsername());
+                UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getTenancyId());
                 if (claims.getTenancyId() == null || claims.getUserSessionId() == null){
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     response.getWriter().write("Invalid token");

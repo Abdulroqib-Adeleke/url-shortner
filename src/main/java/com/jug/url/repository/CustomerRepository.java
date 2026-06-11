@@ -34,4 +34,16 @@ public interface CustomerRepository extends JpaRepository<CustomerModel, UUID> {
             "comp.adminId)FROM CustomerModel c JOIN Company comp ON comp.id = c.companyId WHERE c.userId = :userId")
     Optional<CustomerProxy> findCustomerByUserId(@Param("UserId") UUID userId);
 
+    @Query("SELECT new com.jug.url.dto.proxy.CustomerProxy(c.name," +
+            "c.id," +
+            "c.email," +
+            "c.userId," +
+            "c.companyId," +
+            "c.createdDate," +
+            "c.updatedDate," +
+            "comp.name," +
+            "comp.adminId)FROM CustomerModel c JOIN Company comp ON comp.id = c.companyId " +
+            "WHERE c.email = :email AND c.companyId = :companyId")
+    Optional<CustomerProxy> findCustomerByEmailAndCompanyId(@Param("Email") String email, @Param("CompanyId") UUID companyId);
+
 }

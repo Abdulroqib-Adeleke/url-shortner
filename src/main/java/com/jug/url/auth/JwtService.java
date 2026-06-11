@@ -43,13 +43,15 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    //TODO: extract and remove this method
+
     public String extractUsername(String token) {
-        return extractAllClaims(token).getSubject();
+        Claims claims = extractAllClaims(token);
+        return (String) claims.get("tenancyId");
     }
 
-    //TODO: extract and remove this method
+
     public Date extractExpiration(String token) {
+
         return extractAllClaims(token).getExpiration();
     }
 

@@ -51,7 +51,7 @@ public class AuthController {
     @PostMapping("/customer/login")
     public  ResponseWrapper<AuthResponse> customerLogin(@RequestBody @Valid LoginRequest payload,
                                                         @RequestHeader("X-COMPANY_ID") UUID companyId) {
-        return  userService.login(payload);
+        return  userService.cu
     }
 
     @PutMapping("/logout")
