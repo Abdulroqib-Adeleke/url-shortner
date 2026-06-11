@@ -8,6 +8,7 @@ import com.jug.url.dto.response.ResponseWrapper;
 import com.jug.url.enums.UserType;
 import com.jug.url.exceptions.AccessDeniedException;
 import com.jug.url.exceptions.BadRequestException;
+import com.jug.url.exceptions.ResourceNotFoundException;
 import com.jug.url.model.Company;
 import com.jug.url.repository.CompanyRepository;
 import com.jug.url.service.CompanyService;
@@ -70,9 +71,16 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    //TODO: implement this
     public ResponseWrapper<CompanyProfile> fetchCompanyById(UUID companyId) {
-        return null;
+        Optional<CompanyProfile> companyProfileOptional = companyRepository.fetchCompanyProfileById(companyId);
+        if(companyProfileOptional.isEmpty())throw new ResourceNotFoundException("company not found");
+        CompanyProfile profile = companyProfileOptional.get();
+
+        return ResponseWrapper.<CompanyProfile>builder()
+                .data(profile)
+                .statusCode(HttpStatus.OK)
+                .message("Company profile fetched successfully")
+                .build();
     }
 
     private UUID getCallerAdminId(UserType userType, @Nullable UUID adminId,UserProxy user){
