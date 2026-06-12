@@ -3,6 +3,7 @@ package com.jug.url.dto.response;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -15,6 +16,7 @@ public class CompanyProfile {
     private String supportEmail;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
+    private List<ServiceOfferingResponse> modules;
 
     public CompanyProfile(UUID id, String adminName, UUID adminId,
                           String name, String supportEmail,

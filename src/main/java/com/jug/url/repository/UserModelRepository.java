@@ -16,6 +16,7 @@ import java.util.UUID;
 public interface UserModelRepository extends JpaRepository<UserModel, UUID> {
 
     Optional<UserModel> findByEmail(String Email);
+    Optional<UserModel> findById(UUID id);
 
     @Query("SELECT new com.jug.url.dto.proxy.UserProxy(u.id,u.name," +
             "u.password," +
@@ -25,6 +26,14 @@ public interface UserModelRepository extends JpaRepository<UserModel, UUID> {
             "u.userType) FROM UserModel u WHERE u.email = :email")
     Optional<UserProxy>findUserByEmail(@Param("email") String email);
 
-    @Query("SELECT u.roles FROM UserModel u WHERE u.email = :email")
-    Set<Roles> getUserRoles(@Param("email") String email);
+    @Query("SELECT new com.jug.url.dto.proxy.UserProxy(u.id,u.name," +
+            "u.password," +
+            "u.email," +
+            "u.createdDate," +
+            "u.updatedDate," +
+            "u.userType) FROM UserModel u WHERE u.id = :id")
+    Optional<UserProxy>findUserById(@Param("id") UUID id);
+
+    @Query("SELECT u.roles FROM UserModel u WHERE u.id = :id")
+    Set<Roles> getUserRoles(@Param("id") UUID id);
 }
