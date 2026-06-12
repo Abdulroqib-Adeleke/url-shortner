@@ -7,6 +7,7 @@ import com.jug.url.dto.response.AuthResponse;
 import com.jug.url.dto.response.CompanyProfile;
 import com.jug.url.dto.response.CustomerProfile;
 import com.jug.url.dto.response.ResponseWrapper;
+import com.jug.url.exceptions.BadRequestException;
 import com.jug.url.exceptions.ResourceNotFoundException;
 import com.jug.url.model.CustomerModel;
 import com.jug.url.repository.CustomerRepository;
@@ -57,9 +58,16 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public ResponseWrapper<CustomerProfile> fetchCustomerProfile() {
-        UserProxy loggedInUser = securityUtilsService.getSecurityPrincipal();
-        securityUtilsService.validateCustomerInRole();
-        return getCustomerProfileByUserId(loggedInUser.getId());
+
+        try {
+            UserProxy loggedInUser = securityUtilsService.getSecurityPrincipal();
+            securityUtilsService.validateCustomerInRole();
+            return getCustomerProfileByUserId(loggedInUser.getId());
+        }catch (Exception e){
+            log.error("Error occurred: ",e);
+            throw new BadRequestException(e.getMessage());
+        }
+
     }
 
     @Override

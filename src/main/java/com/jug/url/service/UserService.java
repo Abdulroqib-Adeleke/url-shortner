@@ -11,9 +11,9 @@ import java.util.UUID;
 public interface UserService {
 
     ResponseWrapper<AuthResponse> signupAgent(CreateUserRequest payload);
-    ResponseWrapper<AuthResponse> signupSystemAmin(CreateUserRequest payload);
+    ResponseWrapper<AuthResponse> signupSystemAdmin(CreateUserRequest payload);
     ResponseWrapper<AuthResponse> signupCustomer(CreateUserRequest payload);
     ResponseWrapper<AuthResponse> login(LoginRequest payload);
-    ResponseWrapper<AuthResponse> customerLogin(LoginRequest payload, UUID companyId)
+    ResponseWrapper<AuthResponse> customerLogin(LoginRequest payload, UUID companyId);
     ResponseWrapper<LogoutResponse> logOut();
 }

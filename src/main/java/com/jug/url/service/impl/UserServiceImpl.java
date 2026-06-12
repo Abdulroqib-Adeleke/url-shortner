@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseWrapper<AuthResponse> signupSystemAmin(CreateUserRequest payload) {
+    public ResponseWrapper<AuthResponse> signupSystemAdmin(CreateUserRequest payload) {
         log.info("AUTH LOG: SYSADMIN signup payload: {}",payload);
 
         Optional<UserModel> userModel = userModelRepository.findByEmail(payload.getEmail());
@@ -82,8 +82,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseWrapper<AuthResponse> signupCustomer(CreateUserRequest payload) {
+
+        Optional<UserModel> userModel = userModelRepository.findByEmail(payload.getEmail());
+
+        if (userModel.isPresent() && userModel.get().getUserType() != null
+                && (userModel.get().getUserType().equals(UserType.SYSTEM_ADMIN)
+                || userModel.get().getUserType().equals(UserType.ADMIN)))
+            throw new BadRequestException("Error occurred: try with different email");
+
         Set<Roles> customerRoles = Set.of(Roles.USER);
-        SavedUserResponse savedUserResponse = saveUserDetailsAndSession(payload.getName(),payload.getEmail(),payload.getPassword(),customerRoles);
+        SavedUserResponse savedUserResponse = saveUserDetailsAndSession(payload.getName(),
+                payload.getEmail(),payload.getPassword(),customerRoles);
 
         return buildAuthResponse(savedUserResponse.getUserId(),savedUserResponse.getToken(),
                 "Signup successful",
@@ -101,19 +110,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseWrapper<AuthResponse> customerLogin(LoginRequest payload, UUID companyId) {
-        try{
-            Optional<CustomerProxy>customerProxyOptional = customerRepository.findCustomerByEmailAndCompanyId(payload.getEmail(), companyId);
-            if(customerProxyOptional.isEmpty()) throw new AccessDeniedException("Error: occurred: invalid credentials");
+        try {
+            Optional<CustomerProxy> customerProxyOptional = customerRepository.findCustomerByEmailAndCompanyId(payload.getEmail(),companyId);
+            if (customerProxyOptional.isEmpty()) throw new AccessDeniedException("Error occurred: invalid credentials");
             CustomerProxy customerProxy = customerProxyOptional.get();
 
             Optional<UserModel> userModelOptional = userModelRepository.findById(customerProxy.getUserId());
 
-            if(userModelOptional.isEmpty()) throw new AccessDeniedException("Invalid authentication credentials");
+            if (userModelOptional.isEmpty()) throw new AccessDeniedException("Invalid authentication credentials");
 
-            return getAuthResponseResponseWrapper(payload, userModelOptional.get());
-        }catch (Exception ex){
-            log.error("Error occurred: " , ex);
-            throw new BadRequestException(ex.getMessage());
+            return getAuthResponseResponseWrapper(payload,userModelOptional.get());
+        }catch (Exception e){
+            log.error("Error occurred: ",e);
+            throw new BadRequestException(e.getMessage());
         }
     }
 

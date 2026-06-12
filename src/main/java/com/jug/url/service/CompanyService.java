@@ -11,6 +11,6 @@ public interface CompanyService {
 
     ResponseWrapper<CreateCompanyResponse> createCompany(CreateCompanyRequest payload);
     ResponseWrapper<CompanyProfile> fetchCompanyProfileByAdminId(UUID adminId);
-    ResponseWrapper<CompanyProfile> fetchCompanyProfile(UUID adminId);
+    ResponseWrapper<CompanyProfile> fetchCompanyProfile(UUID companyId);
     ResponseWrapper<CompanyProfile> fetchCompanyById(UUID companyId);
 }
