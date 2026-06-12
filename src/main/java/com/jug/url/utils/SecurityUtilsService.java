@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -24,10 +25,10 @@ public class SecurityUtilsService {
         if (auth == null || !auth.isAuthenticated()) return Optional.empty();
         AuthUserDetails authUserDetails = (AuthUserDetails) auth.getPrincipal();
         if (authUserDetails == null) return  Optional.empty();
-        String email = authUserDetails.getUsername();
+        UUID userId = UUID.fromString(authUserDetails.getUsername());
 
-        Set<Roles> userRoles = userModelRepository.getUserRoles(email);
-        Optional<UserProxy> optionalUserProxy = userModelRepository.findUserByEmail(email);
+        Set<Roles> userRoles = userModelRepository.getUserRoles(userId);
+        Optional<UserProxy> optionalUserProxy = userModelRepository.findUserById(userId);
 
         if (optionalUserProxy.isEmpty()){
             return  Optional.empty();
