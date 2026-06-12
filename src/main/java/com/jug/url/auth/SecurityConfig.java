@@ -4,6 +4,7 @@ import com.jug.url.config.SecConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,6 +33,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/sysadmin/signup").permitAll()
                         .requestMatchers("/api/auth/agent/signup").permitAll()
                         .requestMatchers("/api/auth/customer/signup").permitAll()
+                        .requestMatchers("/api/auth/customer/login").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/*").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .anyRequest().authenticated()
                 )
