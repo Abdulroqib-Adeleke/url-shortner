@@ -1,6 +1,6 @@
 package com.jug.url.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.util.UUID;
@@ -8,9 +8,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 public class CreateAgentProductOfferingRequest {
-    @NotBlank
+
+    @NotNull
     private UUID companyId;
-    @NotBlank
+    @NotNull
     private UUID serviceOfferingId;
 }
 
