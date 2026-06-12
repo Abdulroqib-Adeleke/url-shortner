@@ -54,6 +54,24 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public ResponseWrapper<CompanyProfile> fetchCompanyProfileByAdminId(UUID adminId) {
+
+        Optional<UserProxy> loggedInUser = securityUtilsService.getPrincipal();
+        if (loggedInUser.isEmpty()) throw new AccessDeniedException("error occurred: access denied");
+        UserProxy user = loggedInUser.get();
+        UUID callerAdminId = getCallerAdminId(user.getUserType(),adminId,user);
+        Optional<CompanyProfile> companyProfileOptional = companyRepository.fetchCompanyProfile(callerAdminId);
+
+        CompanyProfile profile = companyProfileOptional.orElse(null);
+
+        return ResponseWrapper.<CompanyProfile>builder()
+                .data(profile)
+                .statusCode(HttpStatus.OK)
+                .message(profile == null? "no company created yet" : "Company profile fetched successfully")
+                .build();
+    }
+
+    @Override
     public ResponseWrapper<CompanyProfile> fetchCompanyProfile(UUID adminId) {
         Optional<UserProxy> loggedInUser = securityUtilsService.getPrincipal();
         if (loggedInUser.isEmpty()) throw new AccessDeniedException("error occurred: access denied");

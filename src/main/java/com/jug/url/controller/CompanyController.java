@@ -24,7 +24,12 @@ public class CompanyController {
     }
 
     @GetMapping("/company-profile")
-    public  ResponseWrapper<CompanyProfile> getCompanyProfile(@RequestParam(name = "adminId",required = false)UUID adminId){
-        return companyService.fetchCompanyProfile(adminId);
+    public ResponseWrapper<CompanyProfile> getCompanyProfile(@RequestParam(name = "adminId",required = false)UUID adminId){
+        return companyService.fetchCompanyProfileByAdminId(adminId);
+    }
+
+    @GetMapping("/company-profile/{id}")
+    public ResponseWrapper<CompanyProfile> getCompanyProfileById(@PathVariable("id") UUID id){
+        return companyService.fetchCompanyProfile(id);
     }
 }
