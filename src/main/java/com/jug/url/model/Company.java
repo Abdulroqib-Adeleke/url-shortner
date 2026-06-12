@@ -28,6 +28,8 @@ public class Company {
     private String name;
     @Column(name = "support_email")
     private String supportEmail;
+    @Column(name = "base_url")
+    private String baseUrl;
     @CreationTimestamp
     @Column(name = "created_date")
     private LocalDateTime createdDate;

@@ -1,9 +1,11 @@
 package com.jug.url.utils;
 
 import com.jug.url.auth.AuthUserDetails;
+import com.jug.url.dto.proxy.CustomerProxy;
 import com.jug.url.dto.proxy.UserProxy;
 import com.jug.url.enums.Roles;
 import com.jug.url.exceptions.AccessDeniedException;
+import com.jug.url.repository.CustomerRepository;
 import com.jug.url.repository.UserModelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class SecurityUtilsService {
 
     private final UserModelRepository userModelRepository;
+    private final CustomerRepository customerRepository;
 
     public Optional<UserProxy> getPrincipal(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -52,5 +55,13 @@ public class SecurityUtilsService {
     public void validateCustomerInRole() {
         UserProxy loggedInUser = getSecurityPrincipal();
         if(!loggedInUser.getRoles().contains(Roles.USER)) throw new AccessDeniedException("Unauthorized to perform this action!");
+    }
+
+    public CustomerProxy getAuthenticatedCustomer(){
+        UserProxy loggedInUser = getSecurityPrincipal();
+        validateCustomerInRole();
+        Optional<CustomerProxy> customerProxyOptional = customerRepository.findCustomerByUserId(loggedInUser.getId());
+        if (customerProxyOptional.isEmpty()) throw  new AccessDeniedException("Invalid credentials!");
+        return  customerProxyOptional.get();
     }
 }

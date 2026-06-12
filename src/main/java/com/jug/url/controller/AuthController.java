@@ -30,7 +30,7 @@ public class AuthController {
 
     @PostMapping("/sysadmin/signup")
     public ResponseWrapper<AuthResponse> signupSystemAdmin(@RequestBody @Valid CreateUserRequest payload) {
-        return userService.signupSystemAmin(payload);
+        return userService.signupSystemAdmin(payload);
     }
 
     @PostMapping("/agent/signup")

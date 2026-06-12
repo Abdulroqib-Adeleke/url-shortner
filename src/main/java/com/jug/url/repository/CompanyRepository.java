@@ -19,7 +19,8 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
             "u.name,c.adminId," +
             "c.name,c.supportEmail," +
             "c.createdDate," +
-            "c.updatedDate) FROM Company c JOIN UserModel u ON u.id = c.adminId WHERE c.adminId = :adminId")
+            "c.updatedDate," +
+            "c.baseUrl) FROM Company c JOIN UserModel u ON u.id = c.adminId WHERE c.adminId = :adminId")
     Optional<CompanyProfile> fetchCompanyProfile(@Param("adminId") UUID adminId);
 
     @Query("SELECT new com.jug.url.dto.response.CompanyProfile(" +
@@ -29,6 +30,7 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
             "c.name," +
             "c.supportEmail, " +
             "c.createdDate, " +
-            "c.updatedDate)FROM Company  c JOIN UserModel u ON u.id = c.adminId WHERE c.id = :id")
+            "c.updatedDate," +
+            "c.baseUrl)FROM Company  c JOIN UserModel u ON u.id = c.adminId WHERE c.id = :id")
     Optional<CompanyProfile> fetchCompanyProfileById(@Param("id") UUID id);
 }

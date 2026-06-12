@@ -58,7 +58,8 @@ public class UserServiceImpl implements UserService {
         Set<Roles> agentRoles = Set.of(Roles.ADMIN);
 
 
-        SavedUserResponse savedUserResponse = saveUserDetailsAndSession(payload.getName(),payload.getEmail(),payload.getPassword(),agentRoles);
+        SavedUserResponse savedUserResponse =
+                saveUserDetailsAndSession(payload.getName(),payload.getEmail(),payload.getPassword(),agentRoles,UserType.ADMIN);
 
         return buildAuthResponse(savedUserResponse.getUserId(),savedUserResponse.getToken(),
                 "Signup successful",
@@ -73,7 +74,8 @@ public class UserServiceImpl implements UserService {
         if (userModel.isPresent()) throw new BadRequestException("Error occupied,please use another email!");
         Set<Roles> systemAdminRole = Set.of(Roles.SYSTEM_ADMIN);
 
-        SavedUserResponse savedUserResponse = saveUserDetailsAndSession(payload.getName(),payload.getEmail(),payload.getPassword(),systemAdminRole);
+        SavedUserResponse savedUserResponse =
+                saveUserDetailsAndSession(payload.getName(),payload.getEmail(),payload.getPassword(),systemAdminRole,UserType.SYSTEM_ADMIN);
 
         return buildAuthResponse(savedUserResponse.getUserId(),savedUserResponse.getToken(),
                 "Signup successful",
@@ -91,8 +93,9 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Error occurred: try with different email");
 
         Set<Roles> customerRoles = Set.of(Roles.USER);
-        SavedUserResponse savedUserResponse = saveUserDetailsAndSession(payload.getName(),
-                payload.getEmail(),payload.getPassword(),customerRoles);
+        SavedUserResponse savedUserResponse =
+                saveUserDetailsAndSession(payload.getName(),
+                payload.getEmail(),payload.getPassword(),customerRoles,UserType.CUSTOMER);
 
         return buildAuthResponse(savedUserResponse.getUserId(),savedUserResponse.getToken(),
                 "Signup successful",
@@ -149,13 +152,13 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private SavedUserResponse saveUserDetailsAndSession(String name, String email, String password, Set<Roles> agentRoles){
+    private SavedUserResponse saveUserDetailsAndSession(String name, String email, String password, Set<Roles> agentRoles, UserType userType){
         UserModel user = UserModel.builder()
                 .name(name)
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .roles(agentRoles)
-                .userType(UserType.SYSTEM_ADMIN)
+                .userType(userType)
                 .build();
         UserModel savedUser = userModelRepository.save(user);
         String sessionId = LocalDateTime.now().toString();

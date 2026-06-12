@@ -17,10 +17,12 @@ public class CompanyProfile {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private List<ServiceOfferingResponse> modules;
+    private String baseUrl;
 
     public CompanyProfile(UUID id, String adminName, UUID adminId,
                           String name, String supportEmail,
-                          LocalDateTime createdDate, LocalDateTime updatedDate) {
+                          LocalDateTime createdDate, LocalDateTime updatedDate,
+                          String baseUrl) {
         this.id = id;
         this.adminName = adminName;
         this.adminId = adminId;
@@ -28,6 +30,7 @@ public class CompanyProfile {
         this.supportEmail = supportEmail;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
+        this.baseUrl = baseUrl;
     }
 
 }
