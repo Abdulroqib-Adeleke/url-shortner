@@ -5,6 +5,7 @@ import com.jug.url.dto.response.CompanyProfile;
 import com.jug.url.dto.response.CreateCompanyResponse;
 import com.jug.url.dto.response.ResponseWrapper;
 import com.jug.url.service.CompanyService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/company")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class CompanyController {
 
     private final CompanyService companyService;

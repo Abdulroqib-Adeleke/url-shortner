@@ -8,6 +8,8 @@ import com.jug.url.dto.response.LogoutResponse;
 import com.jug.url.dto.response.ResponseWrapper;
 import com.jug.url.service.CustomerService;
 import com.jug.url.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -43,12 +45,14 @@ public class AuthController {
         return  userService.login(payload);
     }
 
+    @Operation(security =@SecurityRequirement(name = "X-COMPANY_ID"))
     @PostMapping("/customer/login")
     public  ResponseWrapper<AuthResponse> customerLogin(@RequestBody @Valid LoginRequest payload,
                                                         @RequestHeader("X-COMPANY_ID") UUID companyId) {
         return  userService.customerLogin(payload, companyId);
     }
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping("/logout")
     public  ResponseWrapper<LogoutResponse> logout() {
         return  userService.logOut();

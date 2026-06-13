@@ -5,6 +5,7 @@ import com.jug.url.dto.response.ResponseWrapper;
 import com.jug.url.dto.response.UrlResponse;
 import com.jug.url.exceptions.BadRequestException;
 import com.jug.url.module.urlmodule.service.UrlService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,7 @@ import java.net.URISyntaxException;
 
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class UrlShortenerController {
 
     private final UrlService urlService;

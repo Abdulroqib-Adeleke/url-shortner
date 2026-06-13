@@ -6,6 +6,7 @@ import com.jug.url.dto.response.CreateProductResponse;
 import com.jug.url.dto.response.ResponseWrapper;
 import com.jug.url.dto.response.ServiceOfferingResponse;
 import com.jug.url.service.ProductOfferingService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @RequestMapping("api/service")
 @RequiredArgsConstructor
 @Slf4j
+@SecurityRequirement(name = "bearerAuth")
 public class ServiceOfferingController {
 
     private final ProductOfferingService productOfferingService;
