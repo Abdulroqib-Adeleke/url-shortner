@@ -49,18 +49,18 @@ Responsibilities:
 
 # Technology Stack
 
-| Technology         | Version                     |
-| ------------------ | --------------------------- |
-| Java               | 21                          |
-| Spring Boot        | 3.x                         |
-| Spring MVC         | 6.x                         |
-| Spring Security    | 6.x                         |
-| JWT Authentication | JJWT                        |
-| Database           | PostgreSQL                  |
-| Build Tool         | Maven                       |
-| ORM                | Spring Data JPA / Hibernate |
-| Validation         | Jakarta Validation          |
-| API Format         | REST JSON                   |
+| Technology         | Version                  |
+| ------------------ |--------------------------|
+| Java               | 21                       |
+| Spring Boot        | 3.x                      |
+| Spring MVC         | 6.x                      |
+| Spring Security    | 6.x                      |
+| JWT Authentication | JJWT                     |
+| Database           | PostgreSQL               |
+| Build Tool         | Maven                    |
+| ORM                | Spring Data JPA / Flyway |
+| Validation         | Jakarta Validation       |
+| API Format         | REST JSON                |
 
 ---
 
@@ -405,9 +405,11 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/${db}
 spring.datasource.username=${usernames}
 spring.datasource.password=${password}
 
-spring.jpa.hibernate.ddl-auto=update
+spring.jpa.hibernate.ddl-auto=none
 spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
+
+spring.flyway.enabled=true
+spring.flyway.locations=classpath:db/migration
 ```
 
 ---
