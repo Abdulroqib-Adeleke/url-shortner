@@ -294,10 +294,8 @@ Creates a system-level service available to companies.
 Example services:
 
 * URL Shortener
-* Analytics
-* CRM
-* Billing
-* Notifications
+* Airtime and data service
+* Money transfer service
 
 ---
 
