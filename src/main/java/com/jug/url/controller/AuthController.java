@@ -25,7 +25,7 @@ public class AuthController {
 
     @GetMapping("/welcome")
     public String welcome() {
-        return "Welcome this endpoint is not secure";
+        return "Welcome to A B2B2C SaaS Platform";
     }
 
     @PostMapping("/agent/signup")
