@@ -50,7 +50,7 @@ Responsibilities:
 # Technology Stack
 
 | Technology         | Version                  |
-| ------------------ |--------------------------|
+|--------------------|--------------------------|
 | Java               | 21                       |
 | Spring Boot        | 3.x                      |
 | Spring MVC         | 6.x                      |
@@ -61,6 +61,7 @@ Responsibilities:
 | ORM                | Spring Data JPA / Flyway |
 | Validation         | Jakarta Validation       |
 | API Format         | REST JSON                |
+| OpenAPi            | OAS 3.x                  |
 
 ---
 
@@ -143,9 +144,9 @@ http://localhost:8080
 
 # API Documentation
 
-# Authentication APIs
+## Authentication APIs
 
-## Welcome Endpoint
+### Welcome Endpoint
 
 ```http
 GET /api/auth/welcome
@@ -155,7 +156,7 @@ Public endpoint used to verify application availability.
 
 ---
 
-## SysAdmin Signup
+### SysAdmin Signup
 
 ```http
 POST /api/auth/sysadmin/signup
@@ -165,7 +166,7 @@ Registers a new system administrator.
 
 ---
 
-## Agent Signup
+### Agent Signup
 
 ```http
 POST /api/auth/agent/signup
@@ -175,7 +176,7 @@ Registers a new company account.
 
 ---
 
-## Customer Signup
+### Customer Signup
 
 ```http
 POST /api/auth/customer/signup
@@ -185,7 +186,7 @@ Registers a new customer under a company.
 
 ---
 
-## Login
+### Login
 
 ```http
 POST /api/auth/login
@@ -204,7 +205,7 @@ Request Example:
 
 ---
 
-## Customer Login
+### Customer Login
 
 ```http
 POST /api/auth/customer/login
@@ -227,7 +228,7 @@ Request Body:
 
 ---
 
-## Logout
+### Logout
 
 ```http
 PUT /api/auth/logout
@@ -237,9 +238,9 @@ Logs out authenticated users.
 
 ---
 
-# Company APIs
+## Company APIs
 
-## Create Company
+### Create Company
 
 ```http
 POST /api/company/create-company
@@ -249,7 +250,7 @@ Creates a company profile.
 
 ---
 
-## Logged-In Company Profile
+### Logged-In Company Profile
 
 ```http
 GET /api/company/company-profile
@@ -259,7 +260,7 @@ Returns the profile of the authenticated company.
 
 ---
 
-## Fetch Company By ID
+### Fetch Company By ID
 
 ```http
 GET /api/company/company-profile/{id}
@@ -269,9 +270,9 @@ Returns a company profile by identifier.
 
 ---
 
-# Customer APIs
+## Customer APIs
 
-## Customer Profile
+### Customer Profile
 
 ```http
 GET /api/customer/profile
@@ -281,9 +282,9 @@ Returns authenticated customer profile information.
 
 ---
 
-# Service Offering APIs
+## Service Offering APIs
 
-## Create Platform Service
+### Create Platform Service
 
 ```http
 POST /api/service/principal/create-service
@@ -299,7 +300,7 @@ Example services:
 
 ---
 
-## Disable Platform Service
+### Disable Platform Service
 
 ```http
 PUT /api/service/principal/disable-service/{serviceId}
@@ -309,7 +310,7 @@ Disables a platform-wide service.
 
 ---
 
-## Fetch System Services
+### Fetch System Services
 
 ```http
 GET /api/service/fetch-system-service
@@ -319,7 +320,7 @@ Returns all available platform services.
 
 ---
 
-## Agent Create Service
+### Agent Create Service
 
 ```http
 POST /api/service/agent/create-service
@@ -329,7 +330,7 @@ Allows a company to activate a platform service.
 
 ---
 
-## Agent List Services
+### Agent List Services
 
 ```http
 POST /api/service/agent/list-service
@@ -339,7 +340,7 @@ Returns services activated by the company.
 
 ---
 
-## Agent Disable Service
+### Agent Disable Service
 
 ```http
 PUT /api/service/agent/disable-service/{serviceId}
@@ -508,6 +509,19 @@ Expected response:
 ```
 
 ---
+
+# Swagger Documentation
+
+The API is fully documented using OpenAPI 3 and Swagger UI.
+
+### Swagger UI
+
+After starting the application, access the interactive API documentation at:
+
+http://localhost:8080/swagger-ui/index.html
+
+---
+
 
 # Security
 
