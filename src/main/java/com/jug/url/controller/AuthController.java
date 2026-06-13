@@ -28,11 +28,6 @@ public class AuthController {
         return "Welcome this endpoint is not secure";
     }
 
-    @PostMapping("/sysadmin/signup")
-    public ResponseWrapper<AuthResponse> signupSystemAdmin(@RequestBody @Valid CreateUserRequest payload) {
-        return userService.signupSystemAdmin(payload);
-    }
-
     @PostMapping("/agent/signup")
     public ResponseWrapper<AuthResponse> signupAgent(@RequestBody @Valid CreateUserRequest payload) {
         return userService.signupAgent(payload);

@@ -35,7 +35,8 @@ public interface AgentServiceOfferingRepository extends JpaRepository<AgentServi
 
     @Query("SELECT new com.jug.url.dto.proxy.AgentServiceOfferingProxy(a.id," +
             "a.principalServiceId," +
-            "a.active,a.companyId," +
+            "a.active," +
+            "a.companyId," +
             "a.createdDate," +
             "a.updatedDate," +
             "p.active," +
@@ -45,5 +46,5 @@ public interface AgentServiceOfferingRepository extends JpaRepository<AgentServi
             "WHERE p.active = true " +
             "AND a.active = true " +
             "AND a.companyId = :companyId")
-    List<AgentServiceOfferingProxy> getAgentActiveServicesByCompanyId(@Param("CompanyId") UUID companyId);
+    List<AgentServiceOfferingProxy> getAgentActiveServicesByCompanyId(@Param("companyId") UUID companyId);
 }

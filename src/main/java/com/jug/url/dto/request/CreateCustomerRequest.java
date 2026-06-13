@@ -13,7 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreateCustomerRequest extends CreateUserRequest{
 
-    @NotBlank(message = "please provide company ID")
     @NotNull(message = "please provide company ID")
     private UUID companyId;
 

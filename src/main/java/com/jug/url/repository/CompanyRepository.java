@@ -24,13 +24,13 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
     Optional<CompanyProfile> fetchCompanyProfile(@Param("adminId") UUID adminId);
 
     @Query("SELECT new com.jug.url.dto.response.CompanyProfile(" +
-            "c.id, " +
+            "c.id," +
             "u.name," +
             "c.adminId," +
             "c.name," +
             "c.supportEmail, " +
             "c.createdDate, " +
             "c.updatedDate," +
-            "c.baseUrl)FROM Company  c JOIN UserModel u ON u.id = c.adminId WHERE c.id = :id")
+            "c.baseUrl)FROM Company c JOIN UserModel u ON u.id = c.adminId WHERE c.id = :id")
     Optional<CompanyProfile> fetchCompanyProfileById(@Param("id") UUID id);
 }

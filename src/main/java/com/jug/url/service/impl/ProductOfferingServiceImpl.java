@@ -183,7 +183,7 @@ public class ProductOfferingServiceImpl implements ProductOfferingService {
     }
 
     @Override
-    public ResponseWrapper<List<ServiceOfferingResponse>> fetchAgentService(final UUID adminId) {
+    public ResponseWrapper<List<ServiceOfferingResponse>>   fetchAgentService(final UUID adminId) {
         UserProxy loggedInUser = getSecurityPrincipal();
 
         List<AgentServiceOfferingProxy> agentServiceOfferingProxyList = new ArrayList<>();

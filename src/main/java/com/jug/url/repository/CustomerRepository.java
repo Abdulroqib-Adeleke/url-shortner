@@ -32,7 +32,7 @@ public interface CustomerRepository extends JpaRepository<CustomerModel, UUID> {
             "c.updatedDate," +
             "comp.name," +
             "comp.adminId)FROM CustomerModel c JOIN Company comp ON comp.id = c.companyId WHERE c.userId = :userId")
-    Optional<CustomerProxy> findCustomerByUserId(@Param("UserId") UUID userId);
+    Optional<CustomerProxy> findCustomerByUserId(@Param("userId") UUID userId);
 
     @Query("SELECT new com.jug.url.dto.proxy.CustomerProxy(c.name," +
             "c.id," +
@@ -44,6 +44,6 @@ public interface CustomerRepository extends JpaRepository<CustomerModel, UUID> {
             "comp.name," +
             "comp.adminId)FROM CustomerModel c JOIN Company comp ON comp.id = c.companyId " +
             "WHERE c.email = :email AND c.companyId = :companyId")
-    Optional<CustomerProxy> findCustomerByEmailAndCompanyId(@Param("Email") String email, @Param("CompanyId") UUID companyId);
+    Optional<CustomerProxy> findCustomerByEmailAndCompanyId(@Param("email") String email, @Param("companyId") UUID companyId);
 
 }

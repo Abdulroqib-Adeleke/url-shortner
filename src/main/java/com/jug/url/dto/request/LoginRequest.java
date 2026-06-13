@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class LoginRequest {
 
     @Email(message = "please provide a valid email")
+    @NotNull
     private String email;
     @NotNull(message = "please provide password")
     @NotEmpty(message = "please provide password")

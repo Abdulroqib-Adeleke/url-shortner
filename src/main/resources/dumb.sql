@@ -93,5 +93,21 @@ CREATE TABLE enable_service_request(
                                        CONSTRAINT fk_admin_id
                                            FOREIGN KEY(admin_id) REFERENCES users(id)
 )
+alter table company add column base_url varchar(255) default 'http://localhost:8080/';
 
+create table url_shortener(
+                              id UUID primary key,
+                              customer_id UUID,
+                              company_id UUID,
+                              short_code VARCHAR(50) unique,
+                              long_url varchar(255),
+                              created_date TIMESTAMP default CURRENT_TIMESTAMP,
+                              updated_date TIMESTAMP default  CURRENT_TIMESTAMP,
+
+                              CONSTRAINT fk_ush_customer_id
+                                  FOREIGN KEY(customer_id) REFERENCES customers(id),
+
+                              CONSTRAINT fk_ush_company_id
+                                  FOREIGN KEY(company_id) REFERENCES company(id)
+)
 

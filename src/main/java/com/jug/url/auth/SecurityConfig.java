@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
+                        .requestMatchers("/api/auth/welcome").permitAll()
                         .requestMatchers("/api/auth/sysadmin/signup").permitAll()
                         .requestMatchers("/api/auth/agent/signup").permitAll()
                         .requestMatchers("/api/auth/customer/signup").permitAll()

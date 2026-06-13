@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         log.info("AUTH LOG: SYSADMIN signup payload: {}",payload);
 
         Optional<UserModel> userModel = userModelRepository.findByEmail(payload.getEmail());
-        if (userModel.isPresent()) throw new BadRequestException("Error occupied,please use another email!");
+        if (userModel.isPresent()) throw new BadRequestException("Error occurred,please use another email!");
         Set<Roles> systemAdminRole = Set.of(Roles.SYSTEM_ADMIN);
 
         SavedUserResponse savedUserResponse =
