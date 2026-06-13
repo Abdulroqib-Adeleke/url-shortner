@@ -401,9 +401,9 @@ PostgreSQL is used as the primary database.
 Example configuration:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/b2b2c_db
-spring.datasource.username=postgres
-spring.datasource.password=password
+spring.datasource.url=jdbc:postgresql://localhost:5432/${db}
+spring.datasource.username=${usernames}
+spring.datasource.password=${password}
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
