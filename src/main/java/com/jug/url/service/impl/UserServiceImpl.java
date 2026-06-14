@@ -4,17 +4,22 @@ import com.jug.url.auth.JwtService;
 import com.jug.url.dto.helper.SavedUserResponse;
 import com.jug.url.dto.proxy.CustomerProxy;
 import com.jug.url.dto.proxy.UserProxy;
+import com.jug.url.dto.request.CreateRefreshTokenRequest;
 import com.jug.url.dto.request.CreateUserRequest;
 import com.jug.url.dto.request.LoginRequest;
+import com.jug.url.dto.request.RefreshTokenRequest;
 import com.jug.url.dto.response.*;
 import com.jug.url.enums.Roles;
 import com.jug.url.enums.UserType;
 import com.jug.url.exceptions.AccessDeniedException;
 import com.jug.url.exceptions.BadRequestException;
 import com.jug.url.exceptions.ResourceNotFoundException;
+import com.jug.url.model.RefreshToken;
 import com.jug.url.model.UserModel;
 import com.jug.url.repository.CustomerRepository;
+import com.jug.url.repository.RefreshTokenRepository;
 import com.jug.url.repository.UserModelRepository;
+import com.jug.url.service.RefreshTokenService;
 import com.jug.url.service.UserLoginSessionService;
 import com.jug.url.service.UserService;
 import com.jug.url.utils.SecurityUtilsService;
@@ -47,6 +52,8 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
     private  final SecurityUtilsService securityUtilsService;
     private final CustomerRepository customerRepository;
+    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     @Transactional
@@ -103,16 +110,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseWrapper<AuthResponse> login(LoginRequest payload) {
+    public ResponseWrapper<LoginResponse> login(LoginRequest payload) {
         Optional<UserModel> userModelOptional = userModelRepository.findByEmail(payload.getEmail());
         if (userModelOptional.isEmpty()) throw new ResourceNotFoundException("User not found!");
         UserModel user = userModelOptional.get();
         log.info("User details {}",user);
-        return getAuthResponseResponseWrapper(payload, user);
+        return getLoginResponseWrapper(payload, user);
     }
 
     @Override
-    public ResponseWrapper<AuthResponse> customerLogin(LoginRequest payload, UUID companyId) {
+    public ResponseWrapper<LoginResponse> customerLogin(LoginRequest payload, UUID companyId) {
         try {
             Optional<CustomerProxy> customerProxyOptional = customerRepository.findCustomerByEmailAndCompanyId(payload.getEmail(),companyId);
             if (customerProxyOptional.isEmpty()) throw new AccessDeniedException("Error occurred: invalid credentials");
@@ -122,7 +129,7 @@ public class UserServiceImpl implements UserService {
 
             if (userModelOptional.isEmpty()) throw new AccessDeniedException("Invalid authentication credentials");
 
-            return getAuthResponseResponseWrapper(payload,userModelOptional.get());
+            return getLoginResponseWrapper(payload,userModelOptional.get());
         }catch (Exception e){
             log.error("Error occurred: ",e);
             throw new BadRequestException(e.getMessage());
@@ -130,9 +137,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseWrapper<LoginResponse> refreshToken(RefreshTokenRequest payload) {
+
+        RefreshTokenResponse savedToken = refreshTokenService.validateRefreshToken(payload);
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByToken(savedToken.getRefreshToken());
+
+        if(refreshTokenOptional.isEmpty()) throw new ResourceNotFoundException("Refresh token does not exist");
+        RefreshToken refreshToken = refreshTokenOptional.get();
+
+        String activeSessionId = userLoginSessionService.getUserSession(refreshToken.getUserId());
+        if(!activeSessionId.equals(refreshToken.getSessionId())) throw new BadCredentialsException("Session expired");
+
+        Optional<UserModel> userModelOptional = userModelRepository.findById(refreshToken.getUserId());
+        if(userModelOptional.isEmpty()) throw new ResourceNotFoundException("User not found");
+
+        UserModel user = userModelOptional.get();
+
+        String accessToken = jwtService.generateAccessToken(user.getEmail(), user.getRoles(), activeSessionId, user.getId());
+
+        CreateRefreshTokenRequest createRefreshTokenRequest = new CreateRefreshTokenRequest(user.getId(), activeSessionId);
+        String newRefreshToken = refreshTokenService.generateRefreshToken(createRefreshTokenRequest);
+
+        return buildLoginResponse(user.getId(), accessToken, newRefreshToken, "Token generated successfully", HttpStatus.OK);
+    }
+
+    @Override
     public ResponseWrapper<LogoutResponse> logOut() {
         Optional<UserProxy> userProxyOptional = securityUtilsService.getPrincipal();
         if (userProxyOptional.isEmpty()) throw new ResourceNotFoundException("User not found!");
+        refreshTokenRepository.deleteByUserId(userProxyOptional.get().getId());
         userLoginSessionService.invalidateLoginSession(userProxyOptional.get().getId());
         LogoutResponse response = new LogoutResponse(UUID.randomUUID());
         return ResponseWrapper.<LogoutResponse>builder()
@@ -143,9 +176,18 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private ResponseWrapper<AuthResponse> buildAuthResponse(UUID id, String token, String message, HttpStatusCode statusCode){
-        AuthResponse response = new AuthResponse(id,token);
+    private ResponseWrapper<AuthResponse> buildAuthResponse(UUID id, String accessToken, String message, HttpStatusCode statusCode){
+        AuthResponse response = new AuthResponse(id, accessToken);
         return ResponseWrapper.<AuthResponse>builder()
+                .data(response)
+                .message(message)
+                .statusCode(statusCode)
+                .build();
+    }
+
+    private ResponseWrapper<LoginResponse> buildLoginResponse(UUID id, String accessToken,String refreshToken, String message, HttpStatusCode statusCode){
+        LoginResponse  response = new LoginResponse(id, accessToken, refreshToken);
+        return ResponseWrapper.<LoginResponse>builder()
                 .data(response)
                 .message(message)
                 .statusCode(statusCode)
@@ -163,23 +205,25 @@ public class UserServiceImpl implements UserService {
         UserModel savedUser = userModelRepository.save(user);
         String sessionId = LocalDateTime.now().toString();
         userLoginSessionService.createLoginSession(sessionId,user.getId());
-        String token  = jwtService.generateToken(email, agentRoles,sessionId,savedUser.getId());
+        String token  = jwtService.generateAccessToken(email, agentRoles,sessionId,savedUser.getId());
         return new SavedUserResponse(savedUser.getId(),token);
     }
 
-    private ResponseWrapper<AuthResponse> getAuthResponseResponseWrapper(LoginRequest payload, UserModel user) {
+    private ResponseWrapper<LoginResponse> getLoginResponseWrapper(LoginRequest payload, UserModel user) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getId().toString(), payload.getPassword())
             );
 
             String sessionId = LocalDateTime.now().toString();
-            String token = jwtService.generateToken(payload.getEmail(), user.getRoles(),sessionId, user.getId());
+            String accessToken = jwtService.generateAccessToken(payload.getEmail(), user.getRoles(),sessionId, user.getId());
 
+            CreateRefreshTokenRequest createRefreshTokenRequest = new CreateRefreshTokenRequest(user.getId(), sessionId);
+            String refreshToken = refreshTokenService.generateRefreshToken(createRefreshTokenRequest);
 
             userLoginSessionService.createLoginSession(sessionId, user.getId());
 
-            return buildAuthResponse(user.getId(), token, "Login Successful", HttpStatusCode.valueOf(HttpStatus.OK.value()));
+            return buildLoginResponse(user.getId(), accessToken, refreshToken, "Login Successful", HttpStatusCode.valueOf(HttpStatus.OK.value()));
         }catch (BadCredentialsException ex){
             log.error("Error occurred: ",ex);
             throw new AccessDeniedException("Invalid authentication credentials");

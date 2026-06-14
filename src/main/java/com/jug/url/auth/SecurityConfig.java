@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/agent/signup").permitAll()
                         .requestMatchers("/api/auth/customer/signup").permitAll()
                         .requestMatchers("/api/auth/customer/login").permitAll()
+                        .requestMatchers("/api/auth/refresh-token").permitAll()
                         .requestMatchers(HttpMethod.GET,"/*").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .anyRequest().authenticated()

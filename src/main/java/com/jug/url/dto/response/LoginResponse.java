@@ -9,9 +9,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
+public class LoginResponse {
 
     private UUID userId;
     private String accessToken;
+    private String refreshToken;
 
 }

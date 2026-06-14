@@ -3,7 +3,9 @@ package com.jug.url.controller;
 import com.jug.url.dto.request.CreateCustomerRequest;
 import com.jug.url.dto.request.CreateUserRequest;
 import com.jug.url.dto.request.LoginRequest;
+import com.jug.url.dto.request.RefreshTokenRequest;
 import com.jug.url.dto.response.AuthResponse;
+import com.jug.url.dto.response.LoginResponse;
 import com.jug.url.dto.response.LogoutResponse;
 import com.jug.url.dto.response.ResponseWrapper;
 import com.jug.url.service.CustomerService;
@@ -41,15 +43,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public  ResponseWrapper<AuthResponse> login(@RequestBody @Valid LoginRequest payload) {
+    public  ResponseWrapper<LoginResponse> login(@RequestBody @Valid LoginRequest payload) {
         return  userService.login(payload);
     }
 
     @Operation(security =@SecurityRequirement(name = "X-COMPANY_ID"))
     @PostMapping("/customer/login")
-    public  ResponseWrapper<AuthResponse> customerLogin(@RequestBody @Valid LoginRequest payload,
+    public  ResponseWrapper<LoginResponse> customerLogin(@RequestBody @Valid LoginRequest payload,
                                                         @RequestHeader("X-COMPANY_ID") UUID companyId) {
         return  userService.customerLogin(payload, companyId);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseWrapper<LoginResponse> refreshToken(@RequestBody @Valid RefreshTokenRequest payload){
+
+        return userService.refreshToken(payload);
     }
 
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))

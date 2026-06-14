@@ -20,7 +20,7 @@ public class JwtService {
     @Value("${JWT_SECRET}")
     public String secret;
 
-    public String generateToken(String email, Set<Roles> userRoles,String activeSessionId,UUID userId) {
+    public String generateAccessToken(String email, Set<Roles> userRoles, String activeSessionId, UUID userId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role",userRoles.stream().map(Enum::name).collect(Collectors.toSet()));
         claims.put("sessionId",activeSessionId);
@@ -28,12 +28,16 @@ public class JwtService {
         return createToken(claims, email);
     }
 
+    public String generateRefreshToken(){
+        return UUID.randomUUID().toString();
+    }
+
     private String createToken(Map<String, Object> claims, String email) {
         return Jwts.builder()
                 .claims(claims)
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5))
                 .signWith(getSignKey())
                 .compact();
     }

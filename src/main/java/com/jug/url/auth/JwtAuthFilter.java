@@ -70,7 +70,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         }catch (AccessDeniedException ex){
-
+            ex.printStackTrace();
             formatResponse(response,ex.getMessage(),HttpStatus.UNAUTHORIZED,HttpServletResponse.SC_UNAUTHORIZED);
         }catch (ExpiredJwtException ex){
             formatResponse(response,"Invalid auth token",HttpStatus.FORBIDDEN,HttpServletResponse.SC_FORBIDDEN);
