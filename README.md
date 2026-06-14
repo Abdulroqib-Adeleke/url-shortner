@@ -227,6 +227,15 @@ Request Body:
 ```
 
 ---
+### Refresh Token
+
+```http
+POST /api/auth/refresh-token
+```
+
+Regenerates new access token
+
+---
 
 ### Logout
 
